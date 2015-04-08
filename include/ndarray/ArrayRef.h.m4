@@ -33,7 +33,15 @@ define(`GENERAL_ASSIGN',
         indir(`$2',$1)
         return *this;
     }')dnl
-define(`BASIC_ASSIGN_SCALAR',`std::fill(this->begin(),this->end(),scalar);')dnl
+define(`BASIC_ASSIGN_SCALAR',
+`// originally was "std::fill(this->begin(),this->end(),scalar)" here,
+        // but that doesn't work on Mac 10.9
+        // hints from https://svn.boost.org/trac/boost/ticket/9431
+        // and https://dev.lsstcorp.org/trac/ticket/3054?cversion=0&cnum_hist=3
+        Iterator const end = this->end();
+        for (Iterator i = this->begin(); i != end; ++i) {
+                *i = scalar;
+        }')dnl
 define(`BASIC_ASSIGN_EXPR',`std::copy(expr.begin(),expr.end(),this->begin());')dnl
 define(`AUGMENTED_ASSIGN_SCALAR',
 `Iterator const i_end = this->end();
